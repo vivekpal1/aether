@@ -1,9 +1,21 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const WorldIDSignIn: React.FC = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const user = searchParams.get('user');
+    if (user) {
+      const userData = JSON.parse(decodeURIComponent(user));
+      localStorage.setItem('user', JSON.stringify(userData));
+      router.replace('/dashboard');
+    }
+  }, [searchParams, router]);
 
   const handleSignIn = async () => {
     setIsLoading(true);

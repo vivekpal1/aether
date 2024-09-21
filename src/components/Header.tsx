@@ -1,6 +1,25 @@
+'use client';
+
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import WorldIDSignIn from '@/components/WorldIDSignIn'
 
 export default function Header() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const router = useRouter()
+
+  useEffect(() => {
+    const user = localStorage.getItem('user')
+    setIsLoggedIn(!!user)
+  }, [])
+
+  const handleSignOut = () => {
+    localStorage.removeItem('user')
+    setIsLoggedIn(false)
+    router.push('/')
+  }
+
   return (
     <header className="bg-white shadow-sm">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Top">
@@ -27,6 +46,23 @@ export default function Header() {
                 Contact
               </Link>
             </div>
+          </div>
+          <div>
+            {isLoggedIn ? (
+              <div className="flex items-center space-x-4">
+                <Link href="/dashboard" className="text-base font-medium text-gray-500 hover:text-gray-900">
+                  Dashboard
+                </Link>
+                <button
+                  onClick={handleSignOut}
+                  className="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                >
+                  Sign Out
+                </button>
+              </div>
+            ) : (
+              <WorldIDSignIn />
+            )}
           </div>
         </div>
       </nav>
